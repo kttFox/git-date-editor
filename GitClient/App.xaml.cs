@@ -9,6 +9,13 @@ namespace GitClient
     /// </summary>
     public partial class App : Application
     {
+        protected override void OnStartup( StartupEventArgs e ) {
+            base.OnStartup( e );
+
+            this.DispatcherUnhandledException += ( sender, args ) => {
+                App.Current.Shutdown( -1 );
+			};
+        }
     }
 
 }
