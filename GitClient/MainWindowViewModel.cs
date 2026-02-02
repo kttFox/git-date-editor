@@ -21,9 +21,13 @@ namespace GitClient {
 
 
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor( nameof( ApplyCommand ) )]
 		public partial string Path { get; set; }
 
-		[RelayCommand]
+
+		bool CanApply() => !string.IsNullOrEmpty( Path );
+
+		[RelayCommand( CanExecute = nameof( CanApply ) )]
 		private void Apply() {
 			this.Repository = new Repository( Path );
 

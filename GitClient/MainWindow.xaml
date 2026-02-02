@@ -31,7 +31,8 @@
 					<ColumnDefinition Width="Auto" />
 				</Grid.ColumnDefinitions>
 				<TextBox VerticalContentAlignment="Center"
-						 Text="{Binding Path}" />
+						 Text="{Binding Path,
+										UpdateSourceTrigger=PropertyChanged}" />
 				<Button Grid.Column="1"
 						Width="60"
 						Command="{Binding ApplyCommand}"
