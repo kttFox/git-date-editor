@@ -48,17 +48,18 @@
 				  KeyDown="DataGrid_KeyDown"
 				  VerticalGridLinesBrush="LightGray">
 			<DataGrid.Columns>
-				<DataGridCheckBoxColumn Width="50"
-										Binding="{Binding IsSelected}"
-										Header="選択"
-										IsReadOnly="False">
-					<DataGridCheckBoxColumn.ElementStyle>
-						<Style TargetType="CheckBox">
-							<Setter Property="HorizontalAlignment" Value="Center" />
-							<Setter Property="VerticalAlignment" Value="Center" />
-						</Style>
-					</DataGridCheckBoxColumn.ElementStyle>
-				</DataGridCheckBoxColumn>
+				<DataGridTemplateColumn Width="50"
+										Header="選択">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<CheckBox HorizontalAlignment="Center"
+									  VerticalAlignment="Center"
+									  IsChecked="{Binding IsSelected,
+														  Mode=TwoWay,
+														  UpdateSourceTrigger=PropertyChanged}" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
 				<DataGridTextColumn Width="100"
 									Binding="{Binding Commit.Sha,
 													  StringFormat=0:G8}"
