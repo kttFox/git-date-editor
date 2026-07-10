@@ -90,6 +90,9 @@ namespace GitClient {
 				return;
 			}
 
+			// 処理前のブランチを記憶(detached HEADの場合はnull)
+			var originalBranch = this.Repository.Info.IsHeadDetached ? null : this.Repository.Head;
+
 			var commits = this.Repository.Commits.QueryBy(
 				new CommitFilter {
 					IncludeReachableFrom = this.Repository.Head,
@@ -116,6 +119,24 @@ namespace GitClient {
 						this.Repository.Commit( obj.Message, signature, signature, new() { AmendPreviousCommit = true, AllowEmptyCommit = true } );
 					}
 				}
+			}
+
+			if( newBranch && originalBranch != null ) {
+				var branchName = originalBranch.FriendlyName;
+				var newTip = this.Repository.Head.Tip;
+
+				// 元のブランチをバックアップ名にリネーム(重複時は連番を付与)
+				var backupName = $"{branchName}_backup";
+				for( int i = 2; this.Repository.Branches[backupName] != null; i++ ) {
+					backupName = $"{branchName}_backup_{i}";
+				}
+				this.Repository.Branches.Rename( originalBranch, backupName );
+
+				// 処理後のコミットに元のブランチ名を付けてチェックアウト
+				var renamedBranch = this.Repository.Branches.Add( branchName, newTip );
+				Commands.Checkout( this.Repository, renamedBranch );
+
+				OnPropertyChanged( nameof( Title ) );
 			}
 
 			UpdateItems();
