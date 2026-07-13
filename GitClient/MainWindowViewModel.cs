@@ -143,16 +143,12 @@ namespace GitClient {
 				var branchName = originalBranch.FriendlyName;
 				var newTip = this.Repository.Head.Tip;
 
-				// 元のブランチをバックアップ名にリネーム(重複時は連番を付与)
-				var backupName = $"{branchName}_backup";
-				for( int i = 2; this.Repository.Branches[backupName] != null; i++ ) {
-					backupName = $"{branchName}_backup_{i}";
-				}
-				this.Repository.Branches.Rename( originalBranch, backupName );
+				// 元のブランチを削除
+				this.Repository.Branches.Remove( originalBranch );
 
 				// 処理後のコミットに元のブランチ名を付けてチェックアウト
-				var renamedBranch = this.Repository.Branches.Add( branchName, newTip );
-				Commands.Checkout( this.Repository, renamedBranch );
+				var newHeadBranch = this.Repository.Branches.Add( branchName, newTip );
+				Commands.Checkout( this.Repository, newHeadBranch );
 
 				OnPropertyChanged( nameof( Title ) );
 			}
