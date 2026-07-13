@@ -29,7 +29,20 @@ namespace GitClient {
 
 		[RelayCommand( CanExecute = nameof( CanApply ) )]
 		private void Apply() {
-			this.Repository = new Repository( Path );
+			while( true ) {
+				try {
+					this.Repository = new Repository( Path );
+					break;
+				} catch ( LibGit2Sharp.RepositoryNotFoundException ) {
+					if( !string.IsNullOrEmpty( Path ) ) {
+						var p = System.IO.Path.GetDirectoryName( Path )!;
+						if( Path == p ) {
+							break;
+						}
+						Path = p;
+					}
+				}
+			}
 
 			UpdateItems();
 		}
